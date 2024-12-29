@@ -43,3 +43,6 @@ knife4j:
   enable: true
   setting:
     language: zh_cn
+#log4j配置
+logging:
+  config: classpath:log4j2-spring.xml
