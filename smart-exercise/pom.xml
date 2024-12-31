@@ -58,14 +58,15 @@
       <!-- mybatisplus -->
       <dependency>
           <groupId>com.baomidou</groupId>
-          <artifactId>mybatis-plus-boot-starter</artifactId>
-          <version>3.5.2</version>
+          <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+          <version>3.5.5</version>
       </dependency>
       <!--     lombok依赖 -->
       <dependency>
           <groupId>org.projectlombok</groupId>
           <artifactId>lombok</artifactId>
-          <version>1.18.16</version>
+          <version>1.18.30</version>
+          <scope>provided</scope>
       </dependency>
       <!--     MapStruct 的核心库，提供了注解和工具来定义对象之间的转换规则 -->
       <dependency>
