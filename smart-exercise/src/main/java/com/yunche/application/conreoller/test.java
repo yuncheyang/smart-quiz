@@ -4,13 +4,24 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Resource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.crypto.KeyGenerator;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 
 @Tag(name = "测试")
 @RestController
 public class test {
+
+    @Resource
+    private PasswordEncoder passwordEncoder;
 
     @Operation(summary = "测试接口" ,description = "通过测试学习")
     @GetMapping("/test")
@@ -26,5 +37,18 @@ public class test {
     })
     public String test1( @RequestParam(required = false) Integer id){
         return "test" + id;
+    }
+
+    @RequestMapping("/test2")
+    public void  test2() throws NoSuchAlgorithmException {
+        String encode = passwordEncoder.encode("222");
+        System.out.println(encode);
+
+        // 生成 HMAC 密钥
+        KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
+        keyGen.init(256); // 设置密钥长度为 256 位
+        Key key = keyGen.generateKey();
+        String base64Key = Base64.getEncoder().encodeToString(key.getEncoded());
+        System.out.println("Generated Key: " + base64Key);
     }
 }
