@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +18,7 @@ import javax.crypto.KeyGenerator;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Collection;
 
 @Tag(name = "测试")
 @RestController
@@ -25,7 +29,10 @@ public class test {
 
     @Operation(summary = "测试接口" ,description = "通过测试学习")
     @GetMapping("/test")
+    @PreAuthorize("hasAnyAuthority('user:manage')")
     public String test(@Parameter(name = "id", description = "用户ID", required = true) Long userId){
+        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        System.out.println(authorities);
         return "test" + userId  ;
     }
 

@@ -8,7 +8,8 @@ public enum ResultCodeEnum {
     SUCCESS(200,"成功"),
     FAIL(500, "失败"),
     USER_UN_EXIST(400,"用户已经存在"),
-    USER_LOGIN_OUT(401,"用户已经退出");
+    USER_LOGIN_OUT(401,"用户已经退出"),
+    USER_AUTH(402,"用户无授权信息");;
 
     public int code;
 

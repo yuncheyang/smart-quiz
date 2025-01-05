@@ -1,6 +1,6 @@
 package com.yunche.domain.dto;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.yunche.infra.entity.AuthUser;
 import lombok.AllArgsConstructor;
@@ -38,8 +38,8 @@ public class LoginUser implements UserDetails {
         this.permissions = permissions;
     }
 
-    //权限集合
-    @JSONField(serialize = false)
+    // 权限集合
+    @JsonIgnore
     private List<SimpleGrantedAuthority> authorities;
 
     //获取权限信息
@@ -49,15 +49,6 @@ public class LoginUser implements UserDetails {
         if (authorities != null) {
             return authorities;
         }
-
-        //把permissions中String类型的权限信息封装成SimpleGrantedAuthority
-        //第一种方式
-//         List<GrantedAuthority> newList = new ArrayList<>();
-//        for (String permission : permissions) {
-//            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(permission);
-//            newList.add(authority);
-//        }
-
         //方式二
         authorities = permissions.stream().
                 map(SimpleGrantedAuthority::new).

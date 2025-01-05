@@ -3,6 +3,7 @@ package com.yunche.common.exception.handler;
 import com.yunche.common.entity.Result;
 import com.yunche.common.enums.ResultCodeEnum;
 import com.yunche.common.exception.UserAlreadyExistsException;
+import com.yunche.common.exception.UserAuthException;
 import com.yunche.common.exception.UserLoginOutException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,6 +23,13 @@ public class GlobalExceptionHandler {
     public Result<Object> handleUserLoginOutException(UserLoginOutException e){
         //返回退出登陆详细和状态码401
         return Result.rspData(ResultCodeEnum.USER_LOGIN_OUT.code,e.getMessage());
+    }
+
+    //捕获用户无授权异常
+    @ExceptionHandler(UserAuthException.class)
+    public Result<Object> handleUserAuthException(UserAuthException e){
+        //返回无授权信息状态码402
+        return Result.rspData(ResultCodeEnum.USER_AUTH.code,e.getMessage());
     }
 
 }
