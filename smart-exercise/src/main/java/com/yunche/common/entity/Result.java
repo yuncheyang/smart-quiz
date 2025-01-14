@@ -14,7 +14,7 @@ public class Result<T> {
 
     private Boolean success;
 
-    private String message;
+    private T message;
 
     private T data;
 
@@ -48,7 +48,7 @@ public class Result<T> {
         Result result = new Result();
         result.setSuccess(false);
         result.setCode(ResultCodeEnum.FAIL.code);
-        result.setMessage(ResultCodeEnum.FAIL.desc);
+        result.setMessage(data);
         result.setData(data);
         return result;
     }
@@ -60,6 +60,15 @@ public class Result<T> {
      * @return
      */
     public static <T> Result<T> rspData(int code , T data) {
+        Result result = new Result();
+        result.setSuccess(false);
+        result.setCode(code);
+        result.setMessage(ResultCodeEnum.USER_UN_EXIST.desc);
+        result.setData(data);
+        return result;
+    }
+
+    public static <T> Result<T> rspFail(int code , T data) {
         Result result = new Result();
         result.setSuccess(false);
         result.setCode(code);

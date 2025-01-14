@@ -22,7 +22,7 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @GetMapping("/doLogin")
+    @PostMapping("/doLogin")
     @Operation(summary = "登陆接口")
     public Result<Map<String,String>> doLogin(@RequestBody UserDoLoginPO userDoLoginPO) {
         try {
@@ -34,7 +34,7 @@ public class UserController {
             return Result.ok(userService.doLogin(userDoLoginPO));
         } catch (Exception e) {
             log.error("UserController.doLogin.error:{}", e.getMessage(), e);
-            return Result.fail("用户登录失败");
+            return Result.fail(e.getMessage());
         }
     }
 
@@ -50,7 +50,7 @@ public class UserController {
             return Result.ok(userService.register(userDoLoginPO));
         }catch (Exception e){
             log.error("UserController.register.error:{}", e.getMessage(), e);
-            return Result.fail("用户注册失败");
+            return Result.fail(e.getMessage());
         }
 
     }

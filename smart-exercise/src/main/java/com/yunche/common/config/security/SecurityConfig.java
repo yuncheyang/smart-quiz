@@ -15,6 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * security配置类
@@ -30,28 +34,35 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)// 新的禁用方式
+                // 跨域配置，放在最前面
+                .cors(cors -> cors
+                        .configurationSource(request -> {
+                            CorsConfiguration corsConfig = new CorsConfiguration();
+                            corsConfig.addAllowedOriginPattern("*"); // 允许所有来源
+                            corsConfig.setAllowCredentials(true); // 允许发送凭证（如 cookies）
+                            corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT")); // 允许的 HTTP 方法
+                            corsConfig.setAllowedHeaders(List.of("*")); // 允许所有请求头
+                            corsConfig.setMaxAge(3600L); // 跨域允许时间，单位秒
+
+                            return corsConfig;
+                        })
+                )
+                .csrf(AbstractHttpConfigurer::disable) // 禁用 CSRF
                 // 设置会话管理策略，不使用 Session 来存储 SecurityContext（无状态认证）
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
                         // 放行 Swagger 文档相关路径
-                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/webjars/**", "/swagger-resources/**", "/doc.html","/user/doLogin","/user/register").permitAll()
+                        .requestMatchers("/user/doLogin", "/user/register").permitAll()
                         // 其他请求需要认证
-                        .anyRequest().authenticated());
-//                .formLogin(form -> form
-//                        .loginPage("/login") // 自定义登录页面路径
-//                        .loginProcessingUrl("/perform_login") // 自定义表单提交处理路径
-//                        .usernameParameter("user") // 自定义用户名字段
-//                        .passwordParameter("pass") // 自定义密码字段
-//                        .permitAll() // 登录页面和表单处理放行
-//                );
+                        .anyRequest().authenticated()
+                );
 
-        //把token校验过滤器添加到过滤器链中
+        // 添加 JWT 校验过滤器到过滤器链中
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
+        return http.build(); // 结束配置
     }
 
     // 配置 PasswordEncoder（密码加密方式）
@@ -65,4 +76,5 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+
 }

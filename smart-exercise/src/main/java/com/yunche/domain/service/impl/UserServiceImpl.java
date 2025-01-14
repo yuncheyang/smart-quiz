@@ -6,6 +6,7 @@ import com.yunche.common.config.redis.RedisUtil;
 import com.yunche.common.constant.AuthConstant;
 import com.yunche.common.enums.IsDeleteFlagEnum;
 import com.yunche.common.exception.UserAlreadyExistsException;
+import com.yunche.common.exception.UserLoginException;
 import com.yunche.common.utils.JwtUtil;
 import com.yunche.common.utils.RedisCache;
 import com.yunche.domain.dto.LoginUser;
@@ -95,6 +96,12 @@ public class UserServiceImpl extends ServiceImpl<AuthUserMapper, AuthUser> imple
     @Override
     public Boolean register(UserDoLoginPO userDoLoginPO) {
         String userName = userDoLoginPO.getUserName();
+        String password = userDoLoginPO.getPassword();
+
+        // 判断 username 或者 password 是否为空
+        if (userName == null || userName.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            throw new UserLoginException("用户名或密码不能为空");
+        }
         boolean userExists = lambdaQuery()
                 .eq(AuthUser::getUserName, userName)
                 .exists();

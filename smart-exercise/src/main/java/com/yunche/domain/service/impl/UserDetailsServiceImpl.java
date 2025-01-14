@@ -3,6 +3,7 @@ package com.yunche.domain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.yunche.common.exception.UserAuthException;
+import com.yunche.common.exception.UserLoginException;
 import com.yunche.common.utils.RedisCache;
 import com.yunche.domain.dto.LoginUser;
 import com.yunche.domain.dto.UserRolePermission;
@@ -41,16 +42,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         LambdaQueryWrapper<AuthUser> eq = Wrappers.<AuthUser>lambdaQuery()
                 .eq(AuthUser::getUserName, username);
         AuthUser authUser = authUserMapper.selectOne(eq);
-        Long userId = authUser.getId();
         if (Objects.isNull(authUser)) {
-            throw new RuntimeException("用户名或者密码错误");
+            throw new UserLoginException("没有该用户信息，请注册");
         }
 
         //TODO (授权，即查询用户具有哪些权限)查询对应的用户信息
+        Long userId = authUser.getId();
         String buildKey = redisCache.buildKey(LOGIN_USER, userId.toString());
         UserRolePermission userRolePermission = redisCache.getCacheObject(buildKey);
         if (Objects.isNull(userRolePermission)) {
-            throw new UserAuthException("没有该用户的授权信息");
+            throw new UserAuthException("用户无授权信息");
         }
         List<String> roles = userRolePermission.getRoleMap().get("Roles");
         List<String> permissions = userRolePermission.getPermissionMap().get("Permissions");
