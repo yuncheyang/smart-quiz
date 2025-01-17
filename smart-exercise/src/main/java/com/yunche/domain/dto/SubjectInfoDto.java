@@ -1,9 +1,10 @@
 package com.yunche.domain.dto;
 
+import com.yunche.common.entity.PageInfo;
 import lombok.Data;
 
 @Data
-public class SubjectInfoDto {
+public class SubjectInfoDto extends PageInfo {
 
     private Long id;
 
@@ -11,5 +12,6 @@ public class SubjectInfoDto {
 
     private Integer subjectType;
 
-    private String correctOption;
+    private Integer subjectDifficult;
+
 }

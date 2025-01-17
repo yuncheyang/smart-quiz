@@ -16,7 +16,7 @@ public class PageInfo {
     /**
      * 分页大小
      */
-    private Integer pageSize = 20;
+    private Integer pageSize = 5;
 
     public Integer getPageNo(){
         if (pageNo == null || pageNo < 1){

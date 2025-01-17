@@ -3,6 +3,7 @@ package com.yunche.domain.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yunche.domain.dto.SubjectLabelDto;
 import com.yunche.domain.service.SubjectLabelService;
 import com.yunche.infra.entity.SubjectLabel;
 import com.yunche.infra.mapper.SubjectLabelMapper;
@@ -42,5 +43,25 @@ public class SubjectLabelServiceImpl extends ServiceImpl<SubjectLabelMapper, Sub
             return -1;  // 如果没有查询到数据，返回 -1 或者适当的值
         }
 
+    }
+
+    /**
+     * 获取所有标签
+     *
+     * @return
+     */
+    @Override
+    public List<SubjectLabelDto> getAllLabel() {
+        LambdaQueryWrapper<SubjectLabel> query = Wrappers.<SubjectLabel>lambdaQuery()
+                .select(SubjectLabel::getLabelName, SubjectLabel::getId);
+        List<SubjectLabel> list = list(query);
+        return list.stream()
+                .filter(subjectLabel -> subjectLabel.getId() <= 25)
+                .map(label -> {
+                    SubjectLabelDto subjectLabelDto = new SubjectLabelDto();
+                    subjectLabelDto.setLabelId(label.getId());
+                    subjectLabelDto.setLabelName(label.getLabelName());
+                    return subjectLabelDto;
+                }).toList();
     }
 }
