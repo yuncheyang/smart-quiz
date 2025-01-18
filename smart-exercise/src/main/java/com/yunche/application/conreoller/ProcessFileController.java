@@ -124,8 +124,25 @@ public class ProcessFileController {
 
     @RequestMapping("/answer")
     public void ProcessSubjectAnswer(){
-        List<questionDto> questionDtos = GetDataBase();
+        processRadioAnswer();
+        processMultipleAnswer();
+        processJudgeAnswer();
+    }
 
+    private void processJudgeAnswer() {
+        Set<Integer> subjectId = subjectJudgeService.getSubjectId();
+        subjectAnswerService.updateBatch(subjectId);
+    }
+
+    private void processMultipleAnswer() {
+        Set<Integer> subjectId = subjectMultipleService.getSubjectId();
+        subjectAnswerService.updateBatchMultiple(subjectId);
+
+    }
+
+    private void processRadioAnswer() {
+        Set<Integer> subjectId = subjectRadioService.getSubjectId();
+        subjectAnswerService.updateBatch(subjectId);
     }
 
     // 构建 subjectName 到 questionDto 映射

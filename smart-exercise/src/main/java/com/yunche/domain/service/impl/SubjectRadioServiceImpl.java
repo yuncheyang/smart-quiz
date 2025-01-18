@@ -9,6 +9,8 @@ import com.yunche.infra.mapper.SubjectRadioMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SubjectRadioServiceImpl extends ServiceImpl<SubjectRadioMapper, SubjectRadio> implements SubjectRadioService {
@@ -17,5 +19,13 @@ public class SubjectRadioServiceImpl extends ServiceImpl<SubjectRadioMapper, Sub
         LambdaQueryWrapper<SubjectRadio> queryWrapper = Wrappers.<SubjectRadio>lambdaQuery()
                 .eq(SubjectRadio::getSubjectId, subjectId);
         return list(queryWrapper);
+    }
+
+    @Override
+    public Set<Integer> getSubjectId() {
+        LambdaQueryWrapper<SubjectRadio> radioQuery = Wrappers.<SubjectRadio>lambdaQuery()
+                .select(SubjectRadio::getSubjectId);
+        List<SubjectRadio> list = list(radioQuery);
+        return list.stream().map(SubjectRadio::getSubjectId).collect(Collectors.toSet());
     }
 }
