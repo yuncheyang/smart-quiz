@@ -58,4 +58,8 @@ public class test {
         String base64Key = Base64.getEncoder().encodeToString(key.getEncoded());
         System.out.println("Generated Key: " + base64Key);
     }
+
+    public static void main(String[] args) {
+        System.out.println("Hello World");
+    }
 }
