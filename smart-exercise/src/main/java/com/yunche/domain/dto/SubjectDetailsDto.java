@@ -18,4 +18,6 @@ public class SubjectDetailsDto {
     private String isCorrect;
 
     private String subjectName;
+
+    private Integer subjectId;
 }

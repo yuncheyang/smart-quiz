@@ -10,4 +10,6 @@ public interface SubjectJudgeService extends IService<SubjectJudge> {
     List<SubjectJudge> queryByCondition(Integer subjectId);
 
     Set<Integer> getSubjectId();
+
+    List<SubjectJudge> queryByIDS(List<Long> ids);
 }

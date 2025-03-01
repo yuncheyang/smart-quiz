@@ -21,4 +21,19 @@ public class SubjectMappingServiceImpl extends ServiceImpl<SubjectMappingMapper,
         return list(queryWrapper);
     }
 
+    @Override
+    public List<Integer> getSubjectId(Integer labelId) {
+        LambdaQueryWrapper<SubjectMapping> queryWrapper = Wrappers.<SubjectMapping>lambdaQuery()
+                .eq(SubjectMapping::getLabelId, labelId)
+                .select(SubjectMapping::getSubjectId);
+        List<SubjectMapping> mappings = list(queryWrapper);
+        List<Integer> ids = mappings.stream()
+                .map(SubjectMapping::getSubjectId)
+                .toList();
+        if (ids.size() < 10) {
+            throw new RuntimeException("该标签下的题目不够请重新选择标签");
+        }
+        return ids;
+    }
+
 }

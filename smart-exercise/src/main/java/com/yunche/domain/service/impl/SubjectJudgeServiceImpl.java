@@ -28,4 +28,14 @@ public class SubjectJudgeServiceImpl extends ServiceImpl<SubjectJudgeMapper, Sub
         List<SubjectJudge> list = list(radioQuery);
         return list.stream().map(SubjectJudge::getSubjectId).collect(Collectors.toSet());
     }
+
+    @Override
+    public List<SubjectJudge> queryByIDS(List<Long> ids) {
+        List<Integer> integerIds = ids.stream()
+                .map(Long::intValue)
+                .toList();
+        LambdaQueryWrapper<SubjectJudge> queryWrapper = Wrappers.<SubjectJudge>lambdaQuery()
+                .in(SubjectJudge::getSubjectId, integerIds);
+        return list(queryWrapper);
+    }
 }

@@ -9,4 +9,5 @@ public interface SubjectMappingService extends IService<SubjectMapping> {
 
     List<SubjectMapping> selectSubjectIdByLabelId(Integer labelId);
 
+    List<Integer> getSubjectId(Integer labelId);
 }

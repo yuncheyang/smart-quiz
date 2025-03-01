@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yunche.domain.service.SubjectMultipleService;
 import com.yunche.infra.entity.SubjectMultiple;
-import com.yunche.infra.entity.SubjectRadio;
 import com.yunche.infra.mapper.SubjectMultipleMapper;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +27,15 @@ public class SubjectMultipleServiceImpl  extends ServiceImpl<SubjectMultipleMapp
                 .select(SubjectMultiple::getSubjectId);
         List<SubjectMultiple> list = list(multiple);
         return list.stream().map(SubjectMultiple::getSubjectId).collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<SubjectMultiple> queryByIDS(List<Long> ids) {
+        List<Integer> integerIds = ids.stream()
+                .map(Long::intValue)
+                .toList();
+        LambdaQueryWrapper<SubjectMultiple> queryWrapper = Wrappers.<SubjectMultiple>lambdaQuery()
+                .in(SubjectMultiple::getSubjectId, integerIds);
+        return list(queryWrapper);
     }
 }

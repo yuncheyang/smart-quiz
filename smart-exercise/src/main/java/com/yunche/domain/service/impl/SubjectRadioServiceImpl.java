@@ -28,4 +28,14 @@ public class SubjectRadioServiceImpl extends ServiceImpl<SubjectRadioMapper, Sub
         List<SubjectRadio> list = list(radioQuery);
         return list.stream().map(SubjectRadio::getSubjectId).collect(Collectors.toSet());
     }
+
+    @Override
+    public List<SubjectRadio> queryByIDS(List<Long> ids) {
+        List<Integer> integerIds = ids.stream()
+                .map(Long::intValue)
+                .toList();
+        LambdaQueryWrapper<SubjectRadio> queryWrapper = Wrappers.<SubjectRadio>lambdaQuery()
+                .in(SubjectRadio::getSubjectId, integerIds);
+        return list(queryWrapper);
+    }
 }

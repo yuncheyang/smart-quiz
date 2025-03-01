@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class SubjectMultipleHandler implements SubjectTypeHandler {
@@ -40,5 +41,30 @@ public class SubjectMultipleHandler implements SubjectTypeHandler {
         subjectDetailsDto.setSubjectMap(stringMap);
         subjectDetailsDto.setIsCorrect(subjectAnswer.getCorrectOption());
         return subjectDetailsDto;
+    }
+
+    @Override
+    public List<SubjectDetailsDto> queryByIDS(List<Long> ids) {
+        List<SubjectMultiple> subjectMultiples = subjectMultipleService.queryByIDS(ids);
+        Map<Integer, List<SubjectMultiple>> subjectIdMap = subjectMultiples
+                .stream()
+                .collect(Collectors.groupingBy(SubjectMultiple::getSubjectId));
+        return subjectIdMap.entrySet()
+                .stream()
+                .map(entry -> {
+                    Integer subjectID = entry.getKey();
+                    List<SubjectMultiple> subjectMultipleList = entry.getValue();
+                    //获取该id的正确答案
+                    SubjectAnswer subjectAnswer = subjectAnswerService.queryByCondition(subjectID);
+                    String correctOption = subjectAnswer.getCorrectOption();
+                    Map<String, String> subjectMap = subjectMultipleList
+                            .stream()
+                            .collect(Collectors.toMap(SubjectMultiple::getOptionKey, SubjectMultiple::getOptionContent));
+                    SubjectDetailsDto subjectDetailsDto = new SubjectDetailsDto();
+                    subjectDetailsDto.setSubjectMap(subjectMap);
+                    subjectDetailsDto.setIsCorrect(correctOption);
+                    subjectDetailsDto.setSubjectId(subjectID);
+                    return subjectDetailsDto;
+                }).toList();
     }
 }

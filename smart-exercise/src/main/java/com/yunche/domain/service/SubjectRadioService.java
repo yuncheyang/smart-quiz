@@ -10,4 +10,6 @@ public interface SubjectRadioService extends IService<SubjectRadio> {
     List<SubjectRadio> queryByCondition(Integer subjectId);
 
     Set<Integer> getSubjectId();
+
+    List<SubjectRadio> queryByIDS(List<Long> ids);
 }

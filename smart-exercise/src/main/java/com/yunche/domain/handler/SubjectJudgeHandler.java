@@ -12,9 +12,10 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
-public class SubjectJudgeHandler implements  SubjectTypeHandler{
+public class SubjectJudgeHandler implements SubjectTypeHandler {
 
     @Resource
     private SubjectJudgeService subjectJudgeService;
@@ -41,5 +42,30 @@ public class SubjectJudgeHandler implements  SubjectTypeHandler{
         subjectDetailsDto.setIsCorrect(subjectAnswer.getCorrectOption());
 
         return subjectDetailsDto;
+    }
+
+    @Override
+    public List<SubjectDetailsDto> queryByIDS(List<Long> ids) {
+        List<SubjectJudge> subjectJudges = subjectJudgeService.queryByIDS(ids);
+        Map<Integer, List<SubjectJudge>> subjectIdMap = subjectJudges
+                .stream()
+                .collect(Collectors.groupingBy(SubjectJudge::getSubjectId));
+        return subjectIdMap.entrySet()
+                .stream()
+                .map(entry -> {
+                    Integer subjectID = entry.getKey();
+                    List<SubjectJudge> subjectJudgeList = entry.getValue();
+                    //获取该id的正确答案
+                    SubjectAnswer subjectAnswer = subjectAnswerService.queryByCondition(subjectID);
+                    String correctOption = subjectAnswer.getCorrectOption();
+                    Map<String, String> subjectMap = subjectJudgeList
+                            .stream()
+                            .collect(Collectors.toMap(SubjectJudge::getOptionKey, SubjectJudge::getOptionContent));
+                    SubjectDetailsDto subjectDetailsDto = new SubjectDetailsDto();
+                    subjectDetailsDto.setSubjectMap(subjectMap);
+                    subjectDetailsDto.setIsCorrect(correctOption);
+                    subjectDetailsDto.setSubjectId(subjectID);
+                    return subjectDetailsDto;
+                }).toList();
     }
 }

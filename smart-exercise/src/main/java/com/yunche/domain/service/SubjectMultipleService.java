@@ -10,4 +10,6 @@ public interface SubjectMultipleService extends IService<SubjectMultiple> {
     List<SubjectMultiple> queryByCondition(Integer subjectId);
 
     Set<Integer> getSubjectId();
+
+    List<SubjectMultiple> queryByIDS(List<Long> ids);
 }
